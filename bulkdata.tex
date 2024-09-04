@@ -1,0 +1,80 @@
+\section{Context and motivation}
+
+Rubin Observatory's Legacy Survey of Space and Time (LSST) will generate an unprecedented multi-petabyte dataset of astronomical images, catalogs, and associated data products. A detailed description of these data products is given in \citeds{LSE-163}, an itemized summary of their volume over time is given in \citeds{RTN-003}, and a detailed sizing model is found in \citeds{DMTN-135}.
+
+The primary repository for Rubin data products is the US Data Facility (USDF), hosted at SLAC National Accelerator Laboratory. The primary user interface for the scientific community to access Rubin-LSST data is the Rubin Science Platform (RSP). The RSP vision is described in \citeds{LSE-319}, and detailed RSP requirements are collected in \citeds{LDM-554}. The RSP is hosted in the commercial cloud and is supported by database query and data-access services at the USDF. Together, the cloud-based RSP and the USDF data backend constitute the US Data Access Center (US DAC).
+
+While the US DAC will cover a large fraction of LSST science-analysis use cases under the model of ``bring your analysis to the data'', some use cases may require the export of LSST data to other locations, hence the need for a bulk download capability.
+
+This document describes current plans to enable bulk download and transfer of LSST data products. It is expected to evolve based on ongoing discussions and lessons learned through Rubin Data Previews.
+
+\section{Anticipated use cases}
+
+This section provides a non-exhaustive list of anticipated use cases for bulk download. What qualifies as "bulk" is not defined here quantitatively. Qualitatively we take it to refer to the transfer of a relatively large volume of LSST data products to another facility for analysis or reprocessing.
+
+\begin{itemize}
+\item \textbf{Transfer to IDACs under the in-kind program:} Rubin-LSST includes a program of in-kind contributions from international participant communities in exchange for data rights for an enumerated set of PIs. Several of these contributions take the form of Independent Data Access Centers (IDACs), which will provide the entire LSST science community with access to mirrored copies of LSST data products along with various additional local computational and user-support resources. The in-kind program may expand in the future to encompass IDAC contributions from US domestic groups and organizations, or from additional international partners. IDACs are expected to support certain benchmark capabilities that are described in \citeds{RTN-003}. Facilities supporting the subsequent use cases outlined immediately below are not assumed to serve as IDACs according to the criteria of \citeds{RTN-003}, although in principle they are not precluded from doing so.
+\item \textbf{Coordinated analysis by LSST Science Collaborations at other facilities:} We anticipate that the LSST Science Collaborations will obtain significant allocations of computing resources at other facilities, and will need to stage copies of LSST data products at those locations. We currently expect that the Dark Energy Science Collaboration (DESC) will conduct many of its analysis campaigns at NERSC, and that a full copy of the latest LSST data releases will be copied to that location. Other science collaborations may obtain allocations at other facilities, also requiring bulk data transfer.
+\item \textbf{Community mirroring of LSST data at other analysis facilities:} NSF-funded supercomputing facilities such as the Texas Advanced Computing Center (TACC) and DOE-funded centers such as the Argonne and Oakridge Leadership Computing Facilities (ALCF and OLCF) provide access to proposal-driven allocations of computing resources that far exceed what Rubin can provide to the community. To enable the community to leverage these resources for the analysis of Rubin-LSST data, mirroring of high-value LSST data products to these facilities may be of interest. (This use case may  overlap with the Science Collaboration analysis use case above.)
+\item \textbf{Campus-level download:} Some colleges and universities may plan to devote significant campus-level computing resources to hosting and analyzing LSST data, and may request bulk download to their campus data centers.
+\item \textbf{Individual power users:} Individual Rubin science users may wish to deploy computing resources at their individual disposal, potentially requesting download of significant quantities of Rubin data.
+\end{itemize}
+
+Data transfers to the French and UK Data Facilities (FrDF and UKDF) are not called out above because they are integrated into the Rubin data-processing model. Likewise, the transfer of data products to the Chilean DAC is not included because that process is also internal to Rubin operations. We consider bulk download to refer specifically to outbound transfers to facilities outside the scope of Rubin operations.
+
+\section{Proposed technical solution}
+
+Rubin employs a distributed computing model, with significant shares of each annual data release being processed at each of the USDF, FrDF, and UKDF. The multi-site processing model is described in \citeds{DMTN-213}. This approach requires a coordinated distribution of input and output data across the three sites, for which Rubin has adopted the Rucio distributed data-management software system \citep{Barisits2019} \footnote{\url{https://rucio.cern.ch}}. The baseline plan is to use Rucio also to enable bulk download of science data products.
+
+In addition to the benefit of aligning bulk download tools with distributed processing tools, there are several other reasons supporting the choice of Rucio for bulk download of LSST data:
+\begin{enumerate}
+\item It is open-source and free to use.
+\item It has been developed to support large-scale high-energy physics experiments with which Rubin shares many data-management similarities.
+\item Many Rubin personnel and collaborators have significant experience with Rucio. 
+\item Transfers can be managed from a central location according to a flexible set of rules.
+\item Rucio includes capabilities to monitor the success of data transfers and the integrity of the data at remote sites.
+\item Transfers can be orchestrated not only \textit{to} other facilities, but also \textit{between} other facilities, potentially sharing the load and reducing the impact of network bandwidth limits out of the USDF.
+\end{enumerate}
+
+The current plan is that bulk download and transfer of Rubin data will be orchestrated through a Rucio service hosted at the USDF, and that receiving sites will be configured as \textit{Rucio Storage Elements} (RSEs) in a data distribution network employing Rucio's \textit{data identifier} (DID), \textit{subscription}, and \textit{replication rule} features.
+
+Addition elements of the baseline plan are:
+\begin{itemize}
+\item Data transfers will be orchestrated in conjunction with annual data releases.
+\item Transfer sites will need to provide their own local expertise in configuring their local RSE.
+\item Rubin staff will convene meetings and communication channels to provide support to transfer sites, and to facilitate transfer sites' opportunities to learn from one another's experiences. 
+\item To the greatest extent possible, DIDs will be configured to tag pre-defined collections of data, based for example on data release association, data-product type, and standardized definitions of the contents of a ``Lite IDAC'' or ``Full IDAC''.
+\item Transfer sites may install and configure local copies of Rubin middleware services (Data Butler, \citeds{DMTN-229}) and RSP but are not required to do so (unless required under the terms of an in-kind agreement).
+\end{itemize}
+
+There are several outstanding technical challenges that may affect the practical utility of Rucio to support Rubin bulk downloads:
+\begin{enumerate}
+\item Sites that wish to deploy Rubin middleware and science-platform services in conjunction with their copies of Rubin data will need to integrate Rucio with their local Rubin Data Butler databases. Tools for this integration are currently under development.
+\item Rubin data releases are characterized by a relatively large number of relatively small files, compared to the high-energy experimental datasets to which Rucio was originally applied. The impact of this on Rucio data-transfer performance is currently being investigated, along with potential mitigations.
+\item Normal operation of a Rucio Storage Element requires the use of certificates and authorization mechanisms that may be inconsistent with local site policies. Alternatives and workarounds are available and will be further explored in the context of Rubin Data Previews.
+\end{enumerate}
+
+The initial focus of Rubin bulk download process development will be to support coordinated transfers of data to institutions that will in turn serve large constituencies of users. It may eventually be possible to support individual user-driven downloads through the Rucio Command Line Interface (CLI), subject to available resources and effort to deploy and support this capability. Additional download capability may also be deployed in the future in connection with an ongoing project through the Argonne High-Energy Physics Center for Computational Excellence (HEP-CCE)\footnote{\url{https://www.anl.gov/hep-cce}} to integrate Rucio and Globus.
+
+\section{Policy considerations}
+
+Rubin Observatory's data rights policy is detailed in \citeds{RDO-013}. All bulk download of LSST data is subject to this policy. Individuals, institutions, and communities initiating or receiving bulk transfers of LSST data are responsible for familiarizing themselves with this policy and ensuring that their use of data delivered through bulk transfer channels complies with it.
+
+Bulk downloads of Rubin data will only be arranged for institutions whose user community includes Rubin data-rights holders, and who can present a credible plan for (a) restricting access to users with Rubin data rights and (b) not re-exporting data to locations where it can be accessed by individuals without data rights. Institutions may wish to make use of Rubin data-rights authentication-as-a-service through the US DAC as described in \citeds{DMTN-253}.
+
+To maximize the timely availability of Rubin data releases to the scientific community, bulk transfers of the data products for a given data release may be made in advance of the actual release date. In these cases, bulk-transfer recipient sites must embargo the data from scientific use until the official release date.
+
+The availability of Rubin operations staff to support bulk download is limited. Network bandwith is likewise limited (see \citeds{RTN-003} for estimates of network resource demands.) Effort to set up and support bulk download capabilities will be prioritized into three tiers:
+\begin{itemize}
+\item \textbf{Tier 1:} Transfer to IDACs under the in-kind program and to other facilities supporting major Science Collaboration analyses.
+\item \textbf{Tier 2:} Transfer to facilities that can provide open-access computing resources (for example through a peer-reviewed allocation process) in conjunction with hosted copies of LSST data. Facilities in Tier 2 that are willing and able to serve as intermediary RSEs for onward distribution to other mirror sites may be given additional priority.
+\item \textbf{Tier 3:} All other facilities and individuals.
+\end{itemize}
+
+IDACs and other institutions receiving bulk transfers will be encouraged to share knowledge and expertise with one another directly, to maximize the collective capacity of the Rubin stakeholder community to support bulk data transfer.
+
+\section{Commissioning bulk-transfer capabilities via Rubin Data Previews}
+
+This document describes an overall baseline plan for supporting bulk download of Rubin data. Establishing a detailed procedure will require collaboration between Rubin Data Facilities staff and IDACs and other mirror sites throughout the Data Previews of the Rubin Early Science Program described in \citeds{RTN-011}. Data Facilities staff will solicit expressions of interest and initiate coordination meetings in late FY24 / early FY25. Interested parties should join the \texttt{\#idac-coordination-group} channel in the LSSTC Slack space, which is being used as a central clearinghouse for conversation and planning.
+
+
