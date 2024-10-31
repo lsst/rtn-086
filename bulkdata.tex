@@ -20,7 +20,7 @@ This section provides a non-exhaustive list of anticipated use cases for bulk do
 \item \textbf{Individual power users:} Individual Rubin science users may wish to deploy computing resources at their individual disposal, potentially requesting download of significant quantities of Rubin data.
 \end{itemize}
 
-Data transfers to the French and UK Data Facilities (FrDF and UKDF) are not called out above because they are integrated into the Rubin data-processing model. Likewise, the transfer of data products to the Chilean DAC is not included because that process is also internal to Rubin operations. We consider bulk download to refer specifically to outbound transfers to facilities outside the scope of Rubin operations.
+For the purposes of this document, ``bulk download'' refers specifically to outbound transfers to facilities outside the scope of Rubin operations. Data transfers to the French and UK Data Facilities (FrDF and UKDF) are not called out above because they are integrated into the Rubin data-processing model. The transfer of data products to the Chilean DAC is likewise not included because that process is also internal to Rubin operations. Finally, this document does not consider the possibility of \textit{upload} of derived data products into the Rubin Data Facilities.
 
 \section{Proposed technical solution}
 
@@ -33,7 +33,7 @@ In addition to the benefit of aligning bulk download tools with distributed proc
 \item Many Rubin personnel and collaborators have significant experience with Rucio. 
 \item Transfers can be managed from a central location according to a flexible set of rules.
 \item Rucio includes capabilities to monitor the success of data transfers and the integrity of the data at remote sites.
-\item Transfers can be orchestrated not only \textit{to} other facilities, but also \textit{between} other facilities, potentially sharing the load and reducing the impact of network bandwidth limits out of the USDF.
+\item Transfers can be orchestrated not only \textit{to} other facilities, but also \textit{between} other facilities, potentially sharing the load and reducing the impact of network bandwidth limits out of the USDF. This creates the possibility of a tiered approach with a smaller number of IDACs serving as regional redistribution sites serving a larger network of downstream IDACs.
 \end{enumerate}
 
 The current plan is that bulk download and transfer of Rubin data will be orchestrated through a Rucio service hosted at the USDF, and that receiving sites will be configured as \textit{Rucio Storage Elements} (RSEs) in a data distribution network employing Rucio's \textit{data identifier} (DID), \textit{subscription}, and \textit{replication rule} features.
@@ -42,8 +42,9 @@ Addition elements of the baseline plan are:
 \begin{itemize}
 \item Data transfers will be orchestrated in conjunction with annual data releases.
 \item Transfer sites will need to provide their own local expertise in configuring their local RSE.
-\item Rubin staff will convene meetings and communication channels to provide support to transfer sites, and to facilitate transfer sites' opportunities to learn from one another's experiences. 
-\item To the greatest extent possible, DIDs will be configured to tag pre-defined collections of data, based for example on data release association, data-product type, and standardized definitions of the contents of a ``Lite IDAC'' or ``Full IDAC''.
+\item Rubin staff will convene meetings and communication channels to provide support to transfer sites, and to facilitate transfer sites' opportunities to learn from one another's experiences.
+\item Rules for distribution to RSEs will be implemented and maintained centrally at the USDF.
+\item To the greatest extent possible, DIDs will be configured to tag pre-defined collections of data, based for example on data release association, data-product type, and standardized definitions of the contents of a ``Lite IDAC'' or ``Full IDAC''. The current expectation is that these collections will be limited to subsets of the files in a given data release, and will not support distributing subsets of the contents of individual files.
 \item Transfer sites may install and configure local copies of Rubin middleware services (Data Butler, \citeds{DMTN-229}) and RSP but are not required to do so (unless required under the terms of an in-kind agreement).
 \end{itemize}
 
@@ -54,7 +55,13 @@ There are several outstanding technical challenges that may affect the practical
 \item Normal operation of a Rucio Storage Element requires the use of certificates and authorization mechanisms that may be inconsistent with local site policies. Alternatives and workarounds are available and will be further explored in the context of Rubin Data Previews.
 \end{enumerate}
 
-The initial focus of Rubin bulk download process development will be to support coordinated transfers of data to institutions that will in turn serve large constituencies of users. It may eventually be possible to support individual user-driven downloads through the Rucio Command Line Interface (CLI), subject to available resources and effort to deploy and support this capability. Additional download capability may also be deployed in the future in connection with an ongoing project through the Argonne High-Energy Physics Center for Computational Excellence (HEP-CCE)\footnote{\url{https://www.anl.gov/hep-cce}} to integrate Rucio and Globus.
+The initial focus of Rubin bulk download process development will be to support coordinated transfers of data to institutions that will in turn serve large constituencies of users. It may eventually be possible to support smaller scale user-driven ``pulls'' of data. Several options are under consideration for this, subject to technical feasibility and available support resources:
+\begin{itemize}
+\item Use of the Rucio Command Line Interface (CLI) to enable Rucio-based pulls of data.
+\item Download capability through Rucio-Globus integration planned to be implemented by an ongoing project through the Argonne High-Energy Physics Center for Computational Excellence (HEP-CCE)\footnote{\url{https://www.anl.gov/hep-cce}}.
+\item Download based purely on Globus and/or HTTPS protocol
+\end{itemize}
+Any of the above scenarios will require authentication, and users or institutions accessing the data through these channels will be bound by Rubin data rights restrictions.
 
 \section{Policy considerations}
 
@@ -75,6 +82,4 @@ IDACs and other institutions receiving bulk transfers will be encouraged to shar
 
 \section{Commissioning bulk-transfer capabilities via Rubin Data Previews}
 
-This document describes an overall baseline plan for supporting bulk download of Rubin data. Establishing a detailed procedure will require collaboration between Rubin Data Facilities staff and IDACs and other mirror sites throughout the Data Previews of the Rubin Early Science Program described in \citeds{RTN-011}. Data Facilities staff will solicit expressions of interest and initiate coordination meetings in late FY24 / early FY25. Interested parties should join the \texttt{\#idac-coordination-group} channel in the LSSTC Slack space, which is being used as a central clearinghouse for conversation and planning.
-
-
+This document describes a baseline plan for supporting bulk download of Rubin data. Establishing a detailed procedure will require collaboration between Rubin Data Facilities staff and IDACs and other mirror sites throughout the Data Previews of the Rubin Early Science Program described in \citeds{RTN-011}. Data Facilities staff will solicit expressions of interest and initiate coordination meetings during the DP1 pre-release phase. Staff availability will be limited by the need to focus on the priority of commissioning Rubin's multi-site processing framework. Interested parties should join the \texttt{\#idac-coordination-group} channel in the LSSTC Slack space, which is being used as a central clearinghouse for conversation and planning.
