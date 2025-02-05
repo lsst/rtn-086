@@ -8,6 +8,17 @@ While the US DAC will cover a large fraction of LSST science-analysis use cases 
 
 This document describes current plans to enable bulk download and transfer of LSST data products. It is expected to evolve based on ongoing discussions and lessons learned through Rubin Data Previews.
 
+\section{Requirements}
+
+High-level requirements for a Rubin-LSST bulk data download capability are specified at several levels. At the system requirements level, \citeds{LSE-29} Requirement LSR-REQ-0052 states that ``the LSST System shall provide open access to all LSST Level 1 and Level 2 Data Products, in accordance with LSST Management Board approved policies,'' with Requirement LSR-REQ-0053 further stating that ``the LSST shall permit and facilitate the bulk distribution of its public data to remote sites or users wishing to consume or host it, subject to the availability of resources and the data access policy from LSR-REQ-0052.'' Discussion of LSR-REQ-0053 further clarifies that it ``is not intended to create an open-ended obligation to add bandwidth for data distribution'' and envisions possible cost-recovery arrangements.
+
+At the level of Observatory System Specifications (\citeds{LSE-30}), OSS-REQ-0178 indicates that ``The LSST Project shall facilitate the distribution of its data products in bulk to other sites and institutions willing to host it, in accordance with LSST Management Board approved policies for data release'' while not requiring the project to absorb the marginal cost associated with actual distribution.
+
+Data Management System Requirements (\citeds{LSE-61}) include DMS-REQ-0300 stating that ``the DMS shall provide software to enable bulk download of data products and raw data, subject to network bandwidth,'' including bulk download of older data releases which per DMS-REQ-0077 ``may be available from deep-store with potentially high latency.''
+
+The Rubin Data Policy (\citeds{RDO-013}) states as DPOL-512 that ``Rubin Observatory expects to support bulk data download
+services for significant fractions of the proprietary or public data through a process to be determined in the future. Rubin Observatory reserves the right to charge for the full cost of providing this service or to restrict access to this capability for policy or programmatic reasons.'' Finally, \citeds{RTN-080} assigns the responsibility for bulk download support to the US Data Facility via INFR-560 (``The USDF shall provide a bulk download service...'')
+
 \section{Anticipated use cases}
 
 This section provides a non-exhaustive list of anticipated use cases for bulk download. What qualifies as ``bulk'' is not defined here quantitatively. Qualitatively we take it to refer to the transfer of a relatively large volume of LSST data products to another facility for analysis or reprocessing.
