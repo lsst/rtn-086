@@ -1,4 +1,4 @@
-\documentclass[OPS,authoryear,toc]{lsstdoc}
+\documentclass[OPS,lsstdraft,authoryear,toc]{lsstdoc}
 \input{meta}
 
 % Package imports go here.
@@ -22,9 +22,7 @@
 % Optional subtitle
 % \setDocSubtitle{A subtitle}
 
-\author{%
-Adam Bolton
-}
+\author{ Adam Bolton, Others TBD }
 
 \setDocRef{RTN-086}
 \setDocUpstreamLocation{\url{https://github.com/lsst/rtn-086}}
@@ -33,9 +31,10 @@ Adam Bolton
 
 % Optional: name of the document's curator
 % \setDocCurator{The Curator of this Document}
+%\color{red} \textbf{Unreleased initial draft for discussion and comment}} \\
 
 \setDocAbstract{%
-This document describes the policies and procedures for transfer of large volumes of Rubin-LSST scientific data to other sites. It is focused primarily on transferring science data products to Independent Data Access Centers and other analysis facilities. Transfer between Rubin Data Facilities in the course of multi-site data-release production is out of scope for this document.
+This document describes policies and procedures for transfer of large volumes of Rubin-LSST scientific data to other sites. It is focused primarily on transferring science data products to Independent Data Access Centers and other analysis facilities. Transfer between Rubin Data Facilities in the course of multi-site data-release production is out of scope for this document.
 }
 
 % Change history defined here.
@@ -43,7 +42,7 @@ This document describes the policies and procedures for transfer of large volume
 % Fields: VERSION, DATE, DESCRIPTION, OWNER NAME.
 % See LPM-51 for version number policy.
 \setDocChangeRecord{%
-  \addtohist{1}{YYYY-MM-DD}{Unreleased.}{Adam Bolton}
+  \addtohist{1}{YYYY-MM-DD}{Unreleased initial draft for discussion and comment}{Adam Bolton}
 }
 
 
@@ -53,6 +52,9 @@ This document describes the policies and procedures for transfer of large volume
 \maketitle
 % Frequently for a technote we do not want a title page  uncomment this to remove the title page and changelog.
 % use \mkshorttitle to remove the extra pages
+%\mkshorttitle
+
+\input{bulkdata}
 
 % ADD CONTENT HERE
 % You can also use the \input command to include several content files.
