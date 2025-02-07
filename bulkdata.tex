@@ -35,7 +35,7 @@ For the purposes of this document, ``bulk download'' refers specifically to outb
 
 \section{Proposed technical solution}
 
-Rubin employs a distributed computing model, with significant shares of each annual data release being processed at each of the USDF, FrDF, and UKDF. The multi-site processing model is described in \citeds{DMTN-213}. This approach requires a coordinated distribution of input and output data across the three sites, for which Rubin has adopted the Rucio distributed data-management software system \citep{Barisits2019} \footnote{\url{https://rucio.cern.ch}}. The baseline plan is to use Rucio also to enable bulk download of science data products.
+Rubin employs a distributed computing model, with significant shares of each annual data release being processed at each of the USDF, FrDF, and UKDF. The multi-site processing model is described in \citeds{DMTN-213}. This approach requires a coordinated distribution of input and output data across the three sites, for which Rubin has adopted the Rucio distributed data-management software system \citep{2019CSBS....3...11B} \footnote{\url{https://rucio.cern.ch}}. The baseline plan is to use Rucio also to enable bulk download of science data products.
 
 In addition to the benefit of aligning bulk download tools with distributed processing tools, there are several other reasons supporting the choice of Rucio for bulk download of LSST data:
 \begin{enumerate}
